@@ -1,14 +1,19 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { GoogleMap, useLoadScript, Marker, Autocomplete } from '@react-google-maps/api';
-import { TextField, Box, Typography } from '@mui/material';
-import MapIcon from '@mui/icons-material/Map';
+import React, { useState, useCallback, useEffect } from "react";
+import {
+  GoogleMap,
+  useLoadScript,
+  Marker,
+  Autocomplete,
+} from "@react-google-maps/api";
+import { TextField, Box, Typography } from "@mui/material";
+import MapIcon from "@mui/icons-material/Map";
 import env from "react-dotenv";
 
-const libraries = ['places'];
+const libraries = ["places"];
 
 const MapComponent = ({ onLocationSelect }) => {
   const [selected, setSelected] = useState(null);
-  const [address, setAddress] = useState('');
+  const [address, setAddress] = useState("");
   const [autocomplete, setAutocomplete] = useState(null);
   const [center, setCenter] = useState({ lat: 20.5937, lng: -78.9629 });
   const { isLoaded } = useLoadScript({
@@ -24,11 +29,11 @@ const MapComponent = ({ onLocationSelect }) => {
           setCenter({ lat: latitude, lng: longitude });
         },
         () => {
-          console.log('Unable to retrieve your location');
+          console.log("Unable to retrieve your location");
         }
       );
     } else {
-      console.log('Geolocation is not supported by this browser.');
+      console.log("Geolocation is not supported by this browser.");
     }
   }, []);
 
@@ -51,9 +56,11 @@ const MapComponent = ({ onLocationSelect }) => {
     const latLng = event.latLng.toJSON();
     setSelected(latLng);
 
-    fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latLng.lat},${latLng.lng}&key=AIzaSyDssbhtl1oAlKfV7hqwGX1Ls_5Nw7Nvg5k`)
-      .then(response => response.json())
-      .then(data => {
+    fetch(
+      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latLng.lat},${latLng.lng}&key=${env.GOOGLE_MAP_API}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
         if (data.results && data.results[0]) {
           const address = data.results[0].formatted_address;
           setAddress(address);
@@ -65,11 +72,8 @@ const MapComponent = ({ onLocationSelect }) => {
   if (!isLoaded) return <div>Loading...</div>;
 
   return (
-    <Box sx={{ position: 'relative' }}>
-      <Autocomplete
-        onLoad={setAutocomplete}
-        onPlaceChanged={onPlaceChanged}
-      >
+    <Box sx={{ position: "relative" }}>
+      <Autocomplete onLoad={setAutocomplete} onPlaceChanged={onPlaceChanged}>
         <TextField
           id="search-box"
           type="text"
@@ -84,9 +88,8 @@ const MapComponent = ({ onLocationSelect }) => {
       <GoogleMap
         zoom={10}
         center={selected || center}
-        mapContainerStyle={{ height: '400px', width: '100%' }}
-        onClick={handleMapClick}
-      >
+        mapContainerStyle={{ height: "400px", width: "100%" }}
+        onClick={handleMapClick}>
         {selected && <Marker position={selected} />}
       </GoogleMap>
       <Box sx={{ mt: 2 }}>
@@ -104,7 +107,3 @@ const MapComponent = ({ onLocationSelect }) => {
 };
 
 export default MapComponent;
-
-
-
-
