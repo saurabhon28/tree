@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { GoogleMap, useLoadScript, Marker, Autocomplete } from '@react-google-maps/api';
 import { TextField, Box, Typography } from '@mui/material';
 import MapIcon from '@mui/icons-material/Map';
+import env from "react-dotenv";
 
 const libraries = ['places'];
 
@@ -11,7 +12,7 @@ const MapComponent = ({ onLocationSelect }) => {
   const [autocomplete, setAutocomplete] = useState(null);
   const [center, setCenter] = useState({ lat: 20.5937, lng: -78.9629 });
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: 'AIzaSyDssbhtl1oAlKfV7hqwGX1Ls_5Nw7Nvg5k', // Replace with your actual API key
+    googleMapsApiKey: env.GOOGLE_MAP_API, // Replace with your actual API key
     libraries,
   });
 
